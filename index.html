@@ -65,9 +65,6 @@ details.sol summary{cursor:pointer;font-weight:600;color:var(--teal)}
 .sched .d{padding:10px 0;border-bottom:1px solid var(--line)}
 .sched .d span{display:block;font-size:.88rem;color:var(--ink2)}
 input[type=time],select,input[type=search]{font:inherit;font-size:16px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);min-height:44px}
-.chk{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer}
-.chk input{accent-color:var(--teal);width:18px;height:18px;margin-top:3px;flex:none}
-.chk.done span{color:var(--ink2);text-decoration:line-through}
 /* Mediation */
 .med p{margin:0}
 .sent{display:inline;padding:2px 3px;border-radius:5px;cursor:pointer;transition:background .15s;line-height:1.9}
@@ -112,7 +109,6 @@ input[type=time],select,input[type=search]{font:inherit;font-size:16px;padding:9
   <div class="brand">Englisch<small>Klausur Fr 27.11. · 300 Minuten</small></div>
   <div class="prog"><i id="progBar"></i></div>
   <a href="#start" data-v="start">Übersicht &amp; Zeitplan<span class="dot"></span></a>
-  <a href="#heute" data-v="heute">Plan für heute<span class="dot"></span></a>
   <div class="grp">Die drei Teile</div>
   <a href="#listening" data-v="listening">Listening · 30 min<span class="dot"></span></a>
   <a href="#mediation" data-v="mediation">Mediation · 60 min<span class="dot"></span></a>
@@ -137,13 +133,6 @@ input[type=time],select,input[type=search]{font:inherit;font-size:16px;padding:9
     <div class="sched" id="sched"></div>
   </div>
   <div class="tiles" id="tiles"></div>
-</section>
-
-<section class="view" id="v-heute">
-  <h2>Plan für heute Abend</h2>
-  <p class="lead">Nicht mehr als 3–4 Stunden. Häkchen werden in diesem Browser gespeichert.</p>
-  <div class="card" id="todo"></div>
-  <div class="callout">Lieber früh schlafen als bis Mitternacht Vokabeln. Für fünf Stunden Schreiben brauchst du vor allem Konzentration.</div>
 </section>
 
 <section class="view" id="v-listening">
@@ -344,7 +333,7 @@ input[type=time],select,input[type=search]{font:inherit;font-size:16px;padding:9
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 
-const MODS=[["heute","Plan für heute","Was du heute Abend noch machst."],["listening","Listening","Vorgehen und typische Fehler."],["mediation","Mediation","Checkliste, Aufbau einer E-Mail und eine Übung."],["writing","Writing","Comprehension, Analysis, Evaluation mit Operatoren."],["dreamers","Behold the Dreamers","Figuren, Themen, Setting."],["hintergrund","Hintergrundwissen","American Dream, Finanzkrise, Einwanderung."],["stilmittel","Stilmittel","Mittel, Beispiel, Wirkung."],["sprache","Fehler-Check","Korrektur und Grammatik-Übung."],["phrasen","Phrase Bank","Formulierungen zum Kopieren."],["quiz","Quiz","Prüf dich selbst."]];
+const MODS=[["listening","Listening","Vorgehen und typische Fehler."],["mediation","Mediation","Checkliste, Aufbau einer E-Mail und eine Übung."],["writing","Writing","Comprehension, Analysis, Evaluation mit Operatoren."],["dreamers","Behold the Dreamers","Figuren, Themen, Setting."],["hintergrund","Hintergrundwissen","American Dream, Finanzkrise, Einwanderung."],["stilmittel","Stilmittel","Mittel, Beispiel, Wirkung."],["sprache","Fehler-Check","Korrektur und Grammatik-Übung."],["phrasen","Phrase Bank","Formulierungen zum Kopieren."],["quiz","Quiz","Prüf dich selbst."]];
 
 /* Zeitplan */
 const BLOCKS=[["Listening",30,"#2b72b9","Aufgaben vorher lesen, Stichpunkte, 2× hören"],["Mediation",60,"#6d4bc4","10 min Auswahl markieren · 40 min schreiben · 10 min prüfen"],["Writing: Planung",15,"#0f766e","Text 2× lesen, markieren, Gliederung für alle Aufgaben"],["Comprehension",35,"#14b8a6","Kurz, Präsens, eigene Worte"],["Analysis",70,"#c98800","These – Beleg mit Zeile – Wirkung"],["Evaluation / Comment",70,"#d9482b","Position, Argumente, Conclusion"],["Korrekturlesen",20,"#4a5551","4 Durchgänge, siehe Fehler-Check"]];
@@ -354,12 +343,6 @@ function sched(){const [h,m]=($('#startT').value||'08:00').split(':').map(Number
   store.set('en-start',$('#startT').value)}
 $('#startT').value=store.get('en-start','08:00');$('#startT').addEventListener('input',sched);sched();
 $('#tiles').innerHTML=MODS.map(m=>`<a class="tile" href="#${m[0]}" data-t="${m[0]}"><h3>${m[1]}</h3><p>${m[2]}</p></a>`).join('');
-
-/* Todo */
-const TODO=["Writing-Operatoren durchgehen und für jeden einen Beispielsatz sagen können","Aufbau eines Analysis-Absatzes (These – Beleg – Wirkung) einmal an einem Absatz üben","Mediation-Übung auf dieser Seite machen","Behold the Dreamers: pro Hauptfigur 2–3 Kernpunkte mit Beispiel aus dem Buch","10 Phrasen aus der Phrase Bank auswählen und auswendig lernen","Quiz durchklicken","20 min englischen Podcast hören","Sachen packen: Wörterbuch (falls erlaubt), 2 Stifte, Uhr, Wasser, Essen","Vor 23 Uhr schlafen"];
-const done=store.get('en-todo',[]);
-function todo(){$('#todo').innerHTML=TODO.map((t,i)=>`<label class="chk ${done.includes(i)?'done':''}"><input type="checkbox" data-i="${i}" ${done.includes(i)?'checked':''}><span>${t}</span></label>`).join('')}
-$('#todo').addEventListener('change',e=>{const i=+e.target.dataset.i;const k=done.indexOf(i);k<0?done.push(i):done.splice(k,1);store.set('en-todo',done);todo()});todo();
 
 /* Mediation */
 const MED=[["Deutschland sucht dringend Fachkräfte, vor allem in der Pflege, im Handwerk und in der IT.",1],["Seit 2020 gilt ein Gesetz, das die Einwanderung für qualifizierte Arbeitskräfte erleichtern soll.",1],["Der Bundestag hat das Gesetz nach langen Debatten verabschiedet.",0],["Trotzdem berichten viele Zugewanderte, dass die Anerkennung ihrer Abschlüsse Monate dauert.",1],["Wer kein Deutsch spricht, hat es außerhalb großer Tech-Firmen schwer, eine Stelle zu finden.",1],["Berlin ist bei jungen Menschen aus aller Welt besonders beliebt.",0],["In Städten wie München ist außerdem eine bezahlbare Wohnung kaum zu finden.",1],["Ein Sprecher eines Branchenverbands sagte, die Bürokratie sei das größte Hindernis.",1],["Der Verband wurde 1949 gegründet und hat rund 300 Mitglieder.",0]];
