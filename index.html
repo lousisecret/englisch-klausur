@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Englisch-Klausur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* VOICE: ruhiger Lernatlas, gleiche Handschrift wie der Neuro-Atlas
+   IDEA: Klausurbogen mit Zeitleiste – 300 Minuten als Hauptobjekt
+   PICTURE: interaktiver Zeitplan der Klausur (Startzeit → Uhrzeiten)
+   COLOUR/TYPE: Papier, Tinte, Teal; Fraunces + IBM Plex
+   LAYOUT: dunkle Seitenleiste, Module als Ansichten */
+:root{color-scheme:light dark;
+  --bg:light-dark(#f5f2ea,#141917);--paper:light-dark(#fffdf8,#1c2321);--ink:light-dark(#1b2220,#e9e4d8);--ink2:light-dark(#4a5551,#a9b4b0);
+  --line:light-dark(#ddd6c7,#2f3936);--soft:light-dark(#ece6d8,#232b29);--teal:light-dark(#0f766e,#2bb3a6);--teal2:#14b8a6;
+  --coral:light-dark(#d9482b,#f07a5f);--amber:light-dark(#c98800,#e0a92e);--violet:light-dark(#6d4bc4,#a58ce8);--blue:light-dark(#2b72b9,#6fa6e0);--green:light-dark(#2f8f4e,#5fc07f);
+  --ok:light-dark(#dcf1e2,#1d3a27);--bad:light-dark(#fbe1da,#47231b);--cal:light-dark(#e6f3f1,#16302d);
+  --r:14px;--shadow:0 1px 2px rgba(40,30,10,.06),0 8px 24px rgba(40,30,10,.06)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:700;line-height:1.15;margin:0 0 .5em;text-wrap:balance}
+h1{font-size:clamp(2rem,4vw,3rem)}h2{font-size:1.7rem}h3{font-size:1.18rem}
+p{margin:0 0 1em}button{font:inherit;cursor:pointer;color:inherit}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+nav.side{position:sticky;top:0;height:100vh;overflow:auto;background:#1b2220;color:#e9e4d8;padding:22px 14px}
+.brand{font-family:Fraunces,serif;font-size:1.35rem;font-weight:700;padding:0 10px;color:#fff}
+.brand small{display:block;font:400 .8rem "IBM Plex Sans";color:#9fb3ad;margin-top:2px}
+.prog{margin:14px 10px 18px;height:6px;background:#2e3835;border-radius:9px;overflow:hidden}.prog i{display:block;height:100%;width:0;background:var(--teal2);transition:width .4s}
+nav.side a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;color:#d5d0c4;text-decoration:none;font-size:.95rem}
+nav.side a .dot{margin-left:auto;width:7px;height:7px;border-radius:50%}
+nav.side a.seen .dot{background:var(--teal2)}nav.side a:hover{background:#26302d}nav.side a.active{background:#0f766e;color:#fff}
+nav.side .grp{font-size:.78rem;color:#7f918c;margin:16px 10px 6px}
+.menuBtn{display:none}
+main{padding:40px clamp(18px,4vw,56px) 80px;max-width:1180px;width:100%}
+.view{display:none}.view.on{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.view.on{animation:none}}
+.lead{font-size:1.08rem;color:var(--ink2);max-width:760px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow);margin-bottom:22px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;align-items:start}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.hint{font-size:.9rem;color:var(--ink2)}
+.btn{border:1px solid var(--line);background:var(--paper);padding:9px 14px;border-radius:10px;font-weight:500;min-height:44px}
+.btn:hover{border-color:var(--teal);color:var(--teal)}.btn.pri{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--teal2);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.78rem;color:var(--ink2);font-weight:600}
+.callout{border-left:4px solid var(--teal);background:var(--cal);padding:12px 16px;border-radius:0 10px 10px 0;margin:14px 0;font-size:.95rem}
+.callout.warn{border-color:var(--coral);background:var(--bad)}
+.pill{display:inline-block;font-size:.78rem;padding:2px 9px;border-radius:99px;background:var(--soft);color:var(--ink2);margin:0 4px 4px 0;font-weight:500}
+details.sol{background:var(--cal);border:1px dashed var(--teal);border-radius:10px;padding:10px 14px;margin-top:10px}
+details.sol summary{cursor:pointer;font-weight:600;color:var(--teal)}
+/* Zeitleiste */
+.tl{display:flex;height:64px;border-radius:12px;overflow:hidden;border:1px solid var(--line);margin:18px 0 8px}
+.tl div{display:flex;flex-direction:column;justify-content:center;padding:0 10px;color:#fff;font-size:.82rem;line-height:1.2;overflow:hidden;white-space:nowrap}
+.tl b{font-size:.92rem}
+.sched{display:grid;grid-template-columns:auto 1fr;gap:0 18px;margin-top:14px}
+.sched .t{font:500 1.15rem "IBM Plex Mono";color:var(--teal);white-space:nowrap;padding:10px 0;border-bottom:1px solid var(--line)}
+.sched .d{padding:10px 0;border-bottom:1px solid var(--line)}
+.sched .d span{display:block;font-size:.88rem;color:var(--ink2)}
+input[type=time],select,input[type=search]{font:inherit;font-size:16px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);min-height:44px}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.chk input{accent-color:var(--teal);width:18px;height:18px;margin-top:3px;flex:none}
+.chk.done span{color:var(--ink2);text-decoration:line-through}
+/* Mediation */
+.med p{margin:0}
+.sent{display:inline;padding:2px 3px;border-radius:5px;cursor:pointer;transition:background .15s;line-height:1.9}
+.sent:hover{background:var(--soft)}.sent.mark{background:light-dark(#fbeccb,#4a3a12)}
+.sent.ok{background:var(--ok)}.sent.bad{background:var(--bad)}.sent.miss{outline:2px dashed var(--coral)}
+/* Figuren */
+.chars{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.chr{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:15px;cursor:pointer;text-align:left}
+.chr:hover,.chr.sel{border-color:var(--teal);box-shadow:var(--shadow)}
+.chr h4{margin:0 0 2px;font-family:Fraunces,serif;font-size:1.08rem}.chr small{color:var(--ink2)}
+.info{background:var(--soft);border-radius:12px;padding:18px;min-height:140px}
+/* Quiz */
+.opts{display:grid;gap:8px;margin:14px 0}
+.opt{text-align:left;border:1px solid var(--line);background:var(--paper);padding:11px 14px;border-radius:10px;min-height:44px}
+.opt:hover:not(:disabled){border-color:var(--teal)}.opt.ok{background:var(--ok);border-color:var(--green)}.opt.bad{background:var(--bad);border-color:var(--coral)}
+.qbar{height:6px;background:var(--soft);border-radius:9px;overflow:hidden;margin-bottom:18px}.qbar i{display:block;height:100%;background:var(--teal);transition:width .3s}
+/* Phrasen */
+.ph{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.phr{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start}
+.phr div{flex:1}.phr em{display:block;font-style:normal;font-size:.82rem;color:var(--ink2)}
+.phr button{border:0;background:var(--soft);border-radius:8px;padding:6px 9px;font-size:.8rem;min-height:36px}
+.cat{font-size:.78rem;color:var(--teal);font-weight:600}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:22px}
+.tile{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:16px;text-decoration:none;color:inherit;position:relative}
+.tile:hover{border-color:var(--teal);box-shadow:var(--shadow)}.tile p{font-size:.88rem;color:var(--ink2);margin:0}
+.tile.seen::after{content:"✓";position:absolute;top:12px;right:14px;color:var(--teal);font-weight:700}
+.foot{margin-top:40px;font-size:.82rem;color:var(--ink2)}
+@media (max-width:980px){
+  .app{grid-template-columns:1fr}
+  nav.side{position:fixed;inset:0 auto 0 0;width:260px;z-index:20;transform:translateX(-100%);transition:transform .25s}
+  nav.side.open{transform:none}
+  .menuBtn{display:inline-flex;position:fixed;top:12px;right:12px;z-index:30;background:#1b2220;color:#fff;border:0;border-radius:10px;padding:10px 14px}
+  .g2,.g3{grid-template-columns:1fr}main{padding-top:64px}
+}
+@media (max-width:600px){.tl div span{display:none}table{font-size:13px}}
+</style>
+</head>
+<body>
+<button class="menuBtn" id="menuBtn">☰ Menü</button>
+<div class="app">
+<nav class="side" id="side">
+  <div class="brand">Englisch<small>Klausur Fr 27.11. · 300 Minuten</small></div>
+  <div class="prog"><i id="progBar"></i></div>
+  <a href="#start" data-v="start">Übersicht &amp; Zeitplan<span class="dot"></span></a>
+  <a href="#heute" data-v="heute">Plan für heute<span class="dot"></span></a>
+  <div class="grp">Die drei Teile</div>
+  <a href="#listening" data-v="listening">Listening · 30 min<span class="dot"></span></a>
+  <a href="#mediation" data-v="mediation">Mediation · 60 min<span class="dot"></span></a>
+  <a href="#writing" data-v="writing">Writing · 210 min<span class="dot"></span></a>
+  <div class="grp">Inhalt &amp; Sprache</div>
+  <a href="#dreamers" data-v="dreamers">Behold the Dreamers<span class="dot"></span></a>
+  <a href="#hintergrund" data-v="hintergrund">Hintergrundwissen<span class="dot"></span></a>
+  <a href="#stilmittel" data-v="stilmittel">Stilmittel<span class="dot"></span></a>
+  <a href="#sprache" data-v="sprache">Fehler-Check<span class="dot"></span></a>
+  <a href="#phrasen" data-v="phrasen">Phrase Bank<span class="dot"></span></a>
+  <div class="grp">Prüfen</div>
+  <a href="#quiz" data-v="quiz">Quiz<span class="dot"></span></a>
+</nav>
+<main>
+
+<section class="view" id="v-start">
+  <h1>Englisch-Klausur: Zeitplan</h1>
+  <p class="lead">Fünf Stunden, drei Teile. Gib die Startzeit ein, dann siehst du, wann du im Writing-Teil wo stehen solltest.</p>
+  <div class="card">
+    <div class="row"><label for="startT"><b>Beginn der Klausur</b></label><input type="time" id="startT" value="08:00"><span class="hint">Die Reihenfolge der Teile kann bei euch abweichen.</span></div>
+    <div class="tl" id="tl"></div>
+    <div class="sched" id="sched"></div>
+  </div>
+  <div class="tiles" id="tiles"></div>
+</section>
+
+<section class="view" id="v-heute">
+  <h2>Plan für heute Abend</h2>
+  <p class="lead">Nicht mehr als 3–4 Stunden. Häkchen werden in diesem Browser gespeichert.</p>
+  <div class="card" id="todo"></div>
+  <div class="callout">Lieber früh schlafen als bis Mitternacht Vokabeln. Für fünf Stunden Schreiben brauchst du vor allem Konzentration.</div>
+</section>
+
+<section class="view" id="v-listening">
+  <h2>Listening · 30 Minuten</h2>
+  <p class="lead">Meist hörst du einen oder zwei Texte, jeden zweimal. Die Aufgaben sind Multiple Choice, Lücken, Stichpunkte oder kurze Antworten.</p>
+  <div class="g3">
+    <div class="card"><h3>Vor dem Hören</h3><p class="hint" style="margin:0">Aufgaben komplett lesen und Schlüsselwörter unterstreichen: Namen, Zahlen, <i>why / how / what for</i>. Überlegen, welche Wortart in eine Lücke gehört.</p></div>
+    <div class="card"><h3>Beim 1. Hören</h3><p class="hint" style="margin:0">Nur Stichpunkte notieren und keine ganzen Sätze. Wenn du etwas verpasst, gehst du direkt zur nächsten Frage weiter. Beim zweiten Hören kommt es wieder.</p></div>
+    <div class="card"><h3>Beim 2. Hören</h3><p class="hint" style="margin:0">Lücken schließen und Antworten prüfen. Erst <b>danach</b> sauber ausformulieren, wenn ganze Sätze verlangt sind.</p></div>
+  </div>
+  <div class="card">
+    <h3>Typische Fehler</h3>
+    <table>
+      <tr><th>Problem</th><th>Was passiert</th><th>Gegenmittel</th></tr>
+      <tr><td>Distraktor</td><td>Ein Wort aus Antwort B fällt im Text, gemeint ist aber A.</td><td>Auf die Aussage achten, nicht auf einzelne Wörter.</td></tr>
+      <tr><td>Korrektur im Satz</td><td>„It was in 2015 – no, actually 2016.“</td><td>Den Satz bis zum Ende hören, bevor du ankreuzt.</td></tr>
+      <tr><td>Paraphrase</td><td>Die Antwort steht mit anderen Worten im Text.</td><td>Mit Synonymen rechnen: <i>rise ≈ increase ≈ go up</i></td></tr>
+      <tr><td>Negation</td><td>„Not only …“, „hardly“, „barely“</td><td>Verneinungen in den Fragen einkreisen.</td></tr>
+    </table>
+  </div>
+  <div class="callout">Heute Abend: 20 Minuten BBC Global News Podcast oder NPR hören, um dich ans Hören auf Englisch zu gewöhnen.</div>
+</section>
+
+<section class="view" id="v-mediation">
+  <h2>Mediation · 60 Minuten</h2>
+  <p class="lead">Du gibst einen deutschen Text auf Englisch wieder, aber <b>nur das, was die Aufgabe verlangt</b>, für eine bestimmte Person und in einer bestimmten Textsorte. Übersetzen kostet Punkte.</p>
+  <div class="g2">
+    <div class="card" style="margin:0">
+      <h3>Checkliste</h3>
+      <table>
+        <tr><td><b>Situation</b></td><td>Wer schreibt wem, warum? Rolle aus der Aufgabe übernehmen.</td></tr>
+        <tr><td><b>Auswahl</b></td><td>Nur Infos, die zur Frage passen. Zahlen nur, wenn sie wichtig sind.</td></tr>
+        <tr><td><b>Erklären</b></td><td>Deutsche Begriffe kurz erklären: <i>Ausbildung → a vocational training programme combining school and work</i></td></tr>
+        <tr><td><b>Textsorte</b></td><td>E-Mail: Anrede, Bezug, Schlussformel. Artikel: Überschrift. Rede: Publikum ansprechen.</td></tr>
+        <tr><td><b>Register</b></td><td>Freund → neutral-informell. Schulleitung, Organisation → formell, keine Kurzformen.</td></tr>
+        <tr><td><b>Keine Meinung</b></td><td>Nur wenn die Aufgabe sie ausdrücklich verlangt.</td></tr>
+      </table>
+    </div>
+    <div class="card" style="margin:0">
+      <h3>Aufbau einer E-Mail</h3>
+      <p class="hint">Dear Ms Miller, / Hi Jake,<br>
+      <i>I'm writing to you because you asked me about … / I came across an article in a German newspaper that might help you with …</i><br><br>
+      <i>According to the article, … · The author points out that … · Another important aspect is …</i><br><br>
+      <i>I hope this helps. Let me know if you have any further questions.</i><br>
+      Best wishes / Kind regards,</p>
+    </div>
+  </div>
+  <div class="card med">
+    <h3>Übung: Was gehört in die Mediation?</h3>
+    <p class="hint"><b>Aufgabe:</b> Your American pen friend wants to move to Germany after graduating. Write an email explaining what makes it difficult for foreigners to start working in Germany. <b>Klicke die Sätze an, die du verwenden würdest</b>, dann „Prüfen“.</p>
+    <p class="hint" style="margin-bottom:8px">Übungstext, selbst geschrieben.</p>
+    <p id="medText"></p>
+    <div class="row" style="margin-top:14px"><button class="btn pri" id="medCheck">Prüfen</button><button class="btn" id="medReset">Zurücksetzen</button><span class="hint" id="medRes"></span></div>
+    <details class="sol"><summary>Musterlösung (Ausschnitt)</summary><p style="margin:0" id="medSol"></p></details>
+  </div>
+</section>
+
+<section class="view" id="v-writing">
+  <h2>Writing · 210 Minuten</h2>
+  <p class="lead">Drei Aufgaben in drei Anforderungsbereichen. Der Operator verrät dir, was zu tun ist. Lies ihn zweimal.</p>
+  <div class="row" id="wTabs" style="margin-bottom:14px"></div>
+  <div class="g2">
+    <div class="card" style="margin:0" id="wBody"></div>
+    <div class="card" style="margin:0"><h3>Operatoren in diesem Teil</h3><table id="wOps"></table></div>
+  </div>
+  <div class="callout warn" style="margin-top:22px"><b>Häufigster Punktverlust:</b> In der Comprehension wird interpretiert oder zitiert, in der Analysis nur nacherzählt, und die Evaluation endet ohne eigene Position. Jede Aufgabe macht genau das, was der Operator verlangt.</div>
+</section>
+
+<section class="view" id="v-dreamers">
+  <h2>Behold the Dreamers (Imbolo Mbue, 2016)</h2>
+  <p class="lead">New York 2007/08: Jende Jonga aus Limbe (Kamerun) wird Chauffeur von Clark Edwards, einem Manager bei Lehman Brothers. Mit dem Zusammenbruch der Bank geraten beide Familien in die Krise. Am Ende kehren die Jongas nach Kamerun zurück.</p>
+  <p class="hint">Überblick zur Wiederholung. Details mit euren Unterrichtsnotizen abgleichen.</p>
+  <div class="g3">
+    <div class="card" style="margin:0"><h3>Autorin</h3><p class="hint" style="margin:0"><b>Imbolo Mbue</b> wurde in Limbe (Kamerun) geboren und kam als junge Frau in die USA. Sie studierte dort und lebt in New York. In der Finanzkrise 2008 verlor sie selbst ihren Job, und diese Erfahrung floss in den Roman ein. Für ihren Debütroman (2016) bekam sie 2017 den PEN/Faulkner Award, außerdem wurde er in Oprahs Book Club aufgenommen.</p></div>
+    <div class="card" style="margin:0"><h3>Erzählweise</h3><p class="hint" style="margin:0"><b>Third-person narrator</b> mit wechselnder Perspektive: Meist erleben wir die Handlung abwechselnd durch Jende und Neni. So sehen wir die Edwards fast nur von außen, durch die Augen der Jongas. In den Dialogen der Jongas tauchen Kamerun-Pidgin und Wörter aus der Heimat auf. Das zeigt ihre Identität und ihre Distanz zum „amerikanischen“ Englisch.</p></div>
+    <div class="card" style="margin:0"><h3>Zeit &amp; Ort</h3><p class="hint" style="margin:0">Von <b>Herbst 2007 bis 2009</b>, also vor, während und nach der Pleite von Lehman Brothers (15. September 2008). Hauptsächlich spielt die Geschichte in <b>New York</b>: Harlem und die Upper East Side, im Sommer kommt das Ferienhaus der Edwards in <b>Southampton</b> (Hamptons) dazu. <b>Limbe</b> ist der Ort der Erinnerung und am Ende das Ziel der Jongas.</p></div>
+  </div>
+  <div class="card" style="margin-top:22px">
+    <h3>Handlung im Überblick</h3>
+    <div class="sched" id="plot"></div>
+  </div>
+  <h3 style="margin-top:8px">Figuren</h3>
+  <div class="g2">
+    <div class="chars" id="chars"></div>
+    <div class="info" id="charInfo" style="position:sticky;top:20px"><h3>Figur wählen</h3><p class="hint">Klick links auf eine Figur.</p></div>
+  </div>
+  <div class="card" style="margin-top:22px">
+    <h3>Themen und wie du sie in der Evaluation nutzt</h3>
+    <table id="themes"><tr><th>Thema</th><th>Im Roman</th><th>Argument für die Evaluation</th></tr></table>
+  </div>
+  <div class="card">
+    <h3>Setting als Gegensatz</h3>
+    <table><tr><th></th><th>Jongas</th><th>Edwards</th></tr>
+      <tr><td>New York</td><td>kleine Wohnung in Harlem</td><td>Upper East Side, Sommerhaus in den Hamptons</td></tr>
+      <tr><td>Sicherheit</td><td>abhängig vom Aufenthaltsstatus und Jendes Job</td><td>finanziell abgesichert, auch nach der Krise</td></tr>
+      <tr><td>Fassade</td><td>Hoffnung auf das „bessere Leben“</td><td>Erfolg nach außen, Ehe- und Familienkrise innen</td></tr>
+      <tr><td>Ende</td><td>Rückkehr nach Limbe, dort vergleichsweise wohlhabend</td><td>Familie zerbrochen, Status bleibt</td></tr></table>
+  </div>
+  <div class="g2">
+    <div class="card" style="margin:0">
+      <h3>Motive &amp; Symbole</h3>
+      <table>
+        <tr><td><b>Das Auto</b></td><td>Jende sitzt nah am Leben der Reichen und gehört trotzdem nicht dazu. Was er im Auto hört und sieht, soll er für sich behalten: Loyalität wird zu seinem Kapital und zu seinem Problem.</td></tr>
+        <tr><td><b>Dreams / dreamers</b></td><td>Schon der Titel macht die Figuren zu Träumenden. Die Frage ist, ob ihre Träume erreichbar sind oder Illusionen bleiben.</td></tr>
+        <tr><td><b>Wohnungen</b></td><td>Die enge Wohnung in Harlem und die großen Häuser der Edwards zeigen die Klassenunterschiede auf einen Blick.</td></tr>
+        <tr><td><b>Briefe &amp; Behörden</b></td><td>Die Termine im Asylverfahren hängen über der Familie. Die Bürokratie entscheidet über ihre Zukunft.</td></tr>
+        <tr><td><b>Limbe</b></td><td>Anfangs ein Ort, aus dem man weg will. Am Ende eine echte Alternative mit Familie und Würde.</td></tr>
+      </table>
+    </div>
+    <div class="card" style="margin:0">
+      <h3>Wichtige Vokabeln</h3>
+      <table id="voc"><tr><th>English</th><th>Deutsch</th></tr></table>
+    </div>
+  </div>
+  <div class="card" style="margin-top:22px">
+    <h3>Mögliche Klausurfragen</h3>
+    <details class="sol"><summary>Characterise Jende / Neni as presented in the excerpt.</summary><p style="margin:0">Achte auf direkte (Erzähler, andere Figuren) und indirekte Charakterisierung (Handeln, Sprache, Gedanken). Zeig auch, wie sich die Figur entwickelt: Jende geht von Optimismus zu Ernüchterung, Neni von der Hoffnung zum verzweifelten Festhalten an ihrem Traum.</p></details>
+    <details class="sol"><summary>Analyse how the author presents the contrast between the two families.</summary><p style="margin:0">Setting, Wohnungen, Sprache, Sorgen und Probleme vergleichen. Wichtige Pointe: Beide Familien haben eine Fassade, Geld schützt die Edwards aber vor den existenziellen Folgen.</p></details>
+    <details class="sol"><summary>“The American Dream is still alive.” Discuss with reference to the novel.</summary><p style="margin:0">Pro: Winston, Neni erlebt Bildungschancen, Jende kehrt mit Ersparnissen zurück. Contra: Status, Klasse und die Krise bremsen Fleiß aus, die Edwards zeigen die Leere des Erfolgs, Vince steigt bewusst aus. Fazit: Der Traum existiert, ist aber ungleich verteilt.</p></details>
+    <details class="sol"><summary>Was Jende's decision to return to Cameroon a failure?</summary><p style="margin:0">Einerseits ja: Der Traum von Amerika ist gescheitert, und Neni verliert ihre Chancen. Andererseits nein: Jende gewinnt Würde und Sicherheit zurück, und in Limbe gehört die Familie zur Mittelschicht. Hier lohnt sich eine eigene, klar begründete Position.</p></details>
+  </div>
+</section>
+
+<section class="view" id="v-hintergrund">
+  <h2>Hintergrundwissen für die Evaluation</h2>
+  <p class="lead">Gute Kommentare verbinden den Text mit Wissen aus dem Unterricht. Diese drei Themen passen fast immer zu Behold the Dreamers.</p>
+  <div class="g3">
+    <div class="card" style="margin:0"><h3>The American Dream</h3>
+      <p class="hint">Die Idee: Jeder kann es durch harte Arbeit zu Wohlstand und Glück bringen, unabhängig von Herkunft. Die Wurzeln liegen in der Unabhängigkeitserklärung von 1776 mit ihrem Versprechen von <i>“life, liberty and the pursuit of happiness”</i>. Den Begriff machte der Historiker James Truslow Adams 1931 bekannt.</p>
+      <p class="hint" style="margin:0"><b>Typische Bilder:</b> rags to riches, self-made man, land of opportunity, melting pot.<br><b>Kritik:</b> Herkunft, Hautfarbe, Aufenthaltsstatus und Bildung entscheiden oft mehr als Fleiß. Studien zeigen, dass sozialer Aufstieg in den USA heute schwerer ist als in vielen europäischen Ländern.</p></div>
+    <div class="card" style="margin:0"><h3>Die Finanzkrise 2008</h3>
+      <p class="hint">Banken vergaben in den USA massenhaft riskante Immobilienkredite (<i>subprime mortgages</i>) und handelten sie als Wertpapiere weiter. Als die Hauspreise fielen, platzte die Blase. Am <b>15. September 2008</b> meldete Lehman Brothers Insolvenz an, die größte Pleite der US-Geschichte.</p>
+      <p class="hint" style="margin:0"><b>Folgen:</b> weltweite Rezession (<i>Great Recession</i>), Millionen verloren Job und Haus, die Arbeitslosigkeit in den USA stieg 2009 auf rund 10 %. Banken wurden mit Steuergeld gerettet (<i>bailout</i>), was viele als ungerecht empfanden.</p></div>
+    <div class="card" style="margin:0"><h3>Einwanderung in die USA</h3>
+      <p class="hint">Die USA sehen sich als <i>nation of immigrants</i>. Gleichzeitig ist der legale Weg schwer: Visa, Green Card und Einbürgerung sind begrenzt und an Bedingungen geknüpft. <b>Asyl</b> bekommt nur, wer eine begründete Furcht vor Verfolgung im Heimatland nachweisen kann. Wirtschaftliche Not allein reicht nicht.</p>
+      <p class="hint" style="margin:0">Rund 11 Millionen Menschen leben ohne gültige Papiere in den USA. Sie arbeiten oft in schlecht bezahlten Jobs und leben mit der ständigen Angst vor Abschiebung, genau wie Jende.</p></div>
+  </div>
+  <div class="card" style="margin-top:22px">
+    <h3>So baust du das in einen Kommentar ein</h3>
+    <p class="hint" style="margin:0"><i>Jende's fate is not just fiction: during the Great Recession millions of Americans lost their jobs, and undocumented workers like him were hit hardest because they had no safety net. This shows that the promise of the American Dream depends heavily on legal status.</i></p>
+  </div>
+</section>
+
+<section class="view" id="v-stilmittel">
+  <h2>Stilmittel und ihre Wirkung</h2>
+  <p class="lead">Nur benennen reicht nicht. Punkte gibt es erst, wenn du die <b>Wirkung</b> erklärst.</p>
+  <input type="search" id="stSearch" placeholder="Stilmittel suchen …" style="width:100%;margin-bottom:14px">
+  <div class="card"><table id="stTab"><tr><th>Stilmittel</th><th>Beispiel</th><th>Typische Wirkung</th></tr></table></div>
+  <div class="card">
+    <h3>Erzähltechnik</h3>
+    <table>
+      <tr><td><b>first-person narrator</b></td><td>Ich-Erzähler, subjektiv, nah an Gefühlen, begrenztes Wissen</td></tr>
+      <tr><td><b>third-person limited</b></td><td>Er/sie-Erzähler aus Sicht einer Figur: Leser teilt deren Blick (Behold the Dreamers)</td></tr>
+      <tr><td><b>omniscient narrator</b></td><td>allwissend, kennt Gedanken aller Figuren, kann kommentieren</td></tr>
+      <tr><td><b>interior monologue</b></td><td>direkte Gedanken einer Figur, wirkt unmittelbar</td></tr>
+      <tr><td><b>direct / indirect characterisation</b></td><td>Eigenschaften werden genannt / zeigen sich im Verhalten, in Sprache und Gedanken</td></tr>
+      <tr><td><b>flashback / foreshadowing</b></td><td>Rückblende / Vorausdeutung, erzeugt Spannung oder erklärt die Vorgeschichte</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="view" id="v-sprache">
+  <h2>Korrekturlesen in den letzten 20 Minuten</h2>
+  <div class="g2">
+    <div class="card" style="margin:0">
+      <h3>In 4 Durchgängen korrigieren</h3>
+      <table>
+        <tr><td><b>1</b></td><td>Verben: <b>3rd person -s</b> (the author <u>shows</u>), Zeitform (Analyse = <b>simple present</b>)</td></tr>
+        <tr><td><b>2</b></td><td>Satzbau: keine deutschen Satzstellungen, <i>which/who</i> mit oder ohne Komma</td></tr>
+        <tr><td><b>3</b></td><td>Typische Verwechslungen: <i>since/for, then/than, its/it's, their/there, lose/loose, affect/effect</i></td></tr>
+        <tr><td><b>4</b></td><td>Groß-/Kleinschreibung: Nationalitäten groß (<i>American</i>), Nomen klein</td></tr>
+      </table>
+    </div>
+    <div class="card" style="margin:0">
+      <h3>Übung: Welche Form stimmt?</h3>
+      <div id="drill"></div>
+      <div class="row"><button class="btn" id="drillNext">Nächster Satz →</button><span class="hint" id="drillScore"></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="v-phrasen">
+  <h2>Phrase Bank</h2>
+  <div class="row" style="margin-bottom:14px"><input type="search" id="phSearch" placeholder="Suchen … (z. B. contrast, conclusion)" style="flex:1;min-width:220px"><select id="phCat"></select></div>
+  <div class="ph" id="phList"></div>
+</section>
+
+<section class="view" id="v-quiz">
+  <h2>Wissens-Check</h2>
+  <div class="card" id="quizBox"></div>
+</section>
+
+<div class="foot">Lernhilfe für die Englisch-Klausur. Übungstext und Musterlösungen sind Vorschläge.</div>
+</main>
+</div>
+<script>
+{
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+const MODS=[["heute","Plan für heute","Was du heute Abend noch machst."],["listening","Listening","Vorgehen und typische Fehler."],["mediation","Mediation","Checkliste, Aufbau einer E-Mail und eine Übung."],["writing","Writing","Comprehension, Analysis, Evaluation mit Operatoren."],["dreamers","Behold the Dreamers","Figuren, Themen, Setting."],["hintergrund","Hintergrundwissen","American Dream, Finanzkrise, Einwanderung."],["stilmittel","Stilmittel","Mittel, Beispiel, Wirkung."],["sprache","Fehler-Check","Korrektur und Grammatik-Übung."],["phrasen","Phrase Bank","Formulierungen zum Kopieren."],["quiz","Quiz","Prüf dich selbst."]];
+
+/* Zeitplan */
+const BLOCKS=[["Listening",30,"#2b72b9","Aufgaben vorher lesen, Stichpunkte, 2× hören"],["Mediation",60,"#6d4bc4","10 min Auswahl markieren · 40 min schreiben · 10 min prüfen"],["Writing: Planung",15,"#0f766e","Text 2× lesen, markieren, Gliederung für alle Aufgaben"],["Comprehension",35,"#14b8a6","Kurz, Präsens, eigene Worte"],["Analysis",70,"#c98800","These – Beleg mit Zeile – Wirkung"],["Evaluation / Comment",70,"#d9482b","Position, Argumente, Conclusion"],["Korrekturlesen",20,"#4a5551","4 Durchgänge, siehe Fehler-Check"]];
+function sched(){const [h,m]=($('#startT').value||'08:00').split(':').map(Number);let t=h*60+m;const f=x=>String(Math.floor(x/60)%24).padStart(2,'0')+':'+String(x%60).padStart(2,'0');
+  $('#tl').innerHTML=BLOCKS.map(b=>`<div style="flex:${b[1]};background:${b[2]}" title="${b[0]}"><b>${b[1]}′</b><span>${b[0]}</span></div>`).join('');
+  $('#sched').innerHTML=BLOCKS.map(b=>{const s=f(t);t+=b[1];return `<div class="t">${s}</div><div class="d"><b>${b[0]}</b> · ${b[1]} min<span>${b[3]}</span></div>`}).join('')+`<div class="t">${f(t)}</div><div class="d"><b>Abgabe</b></div>`;
+  store.set('en-start',$('#startT').value)}
+$('#startT').value=store.get('en-start','08:00');$('#startT').addEventListener('input',sched);sched();
+$('#tiles').innerHTML=MODS.map(m=>`<a class="tile" href="#${m[0]}" data-t="${m[0]}"><h3>${m[1]}</h3><p>${m[2]}</p></a>`).join('');
+
+/* Todo */
+const TODO=["Writing-Operatoren durchgehen und für jeden einen Beispielsatz sagen können","Aufbau eines Analysis-Absatzes (These – Beleg – Wirkung) einmal an einem Absatz üben","Mediation-Übung auf dieser Seite machen","Behold the Dreamers: pro Hauptfigur 2–3 Kernpunkte mit Beispiel aus dem Buch","10 Phrasen aus der Phrase Bank auswählen und auswendig lernen","Quiz durchklicken","20 min englischen Podcast hören","Sachen packen: Wörterbuch (falls erlaubt), 2 Stifte, Uhr, Wasser, Essen","Vor 23 Uhr schlafen"];
+const done=store.get('en-todo',[]);
+function todo(){$('#todo').innerHTML=TODO.map((t,i)=>`<label class="chk ${done.includes(i)?'done':''}"><input type="checkbox" data-i="${i}" ${done.includes(i)?'checked':''}><span>${t}</span></label>`).join('')}
+$('#todo').addEventListener('change',e=>{const i=+e.target.dataset.i;const k=done.indexOf(i);k<0?done.push(i):done.splice(k,1);store.set('en-todo',done);todo()});todo();
+
+/* Mediation */
+const MED=[["Deutschland sucht dringend Fachkräfte, vor allem in der Pflege, im Handwerk und in der IT.",1],["Seit 2020 gilt ein Gesetz, das die Einwanderung für qualifizierte Arbeitskräfte erleichtern soll.",1],["Der Bundestag hat das Gesetz nach langen Debatten verabschiedet.",0],["Trotzdem berichten viele Zugewanderte, dass die Anerkennung ihrer Abschlüsse Monate dauert.",1],["Wer kein Deutsch spricht, hat es außerhalb großer Tech-Firmen schwer, eine Stelle zu finden.",1],["Berlin ist bei jungen Menschen aus aller Welt besonders beliebt.",0],["In Städten wie München ist außerdem eine bezahlbare Wohnung kaum zu finden.",1],["Ein Sprecher eines Branchenverbands sagte, die Bürokratie sei das größte Hindernis.",1],["Der Verband wurde 1949 gegründet und hat rund 300 Mitglieder.",0]];
+let medSel=new Set();
+function medRender(){$('#medText').innerHTML=MED.map((s,i)=>`<span class="sent ${medSel.has(i)?'mark':''}" data-i="${i}" tabindex="0">${s[0]}</span> `).join('');$('#medRes').textContent=''}
+$('#medText').addEventListener('click',e=>{const s=e.target.closest('.sent');if(!s)return;const i=+s.dataset.i;medSel.has(i)?medSel.delete(i):medSel.add(i);medRender()});
+$('#medCheck').addEventListener('click',()=>{let r=0;$$('#medText .sent').forEach((el,i)=>{const need=MED[i][1],sel=medSel.has(i);el.classList.remove('mark');if(sel&&need){el.classList.add('ok');r++}else if(sel&&!need)el.classList.add('bad');else if(!sel&&need)el.classList.add('miss');else r++});$('#medRes').textContent=`${r} von ${MED.length} richtig entschieden · grün = passt, rot = unnötig, gestrichelt = fehlt`});
+$('#medReset').addEventListener('click',()=>{medSel=new Set();medRender()});
+$('#medSol').innerHTML="<i>Hi Jake,<br>you asked me what it's like to start working in Germany, so here's what I found in a German newspaper. Germany urgently needs skilled workers, especially in nursing, the trades and IT, and since 2020 a new law has made it easier for qualified people to immigrate. However, many newcomers say it takes months before their degrees are officially recognised. Without German, it is hard to find a job outside big tech companies, and in cities like Munich affordable flats are scarce. An industry representative even called bureaucracy the biggest obstacle. …</i>";
+medRender();
+
+/* Writing */
+const W={
+ comp:["Comprehension","Anforderungsbereich I",`<p>Zeige, dass du den Text verstanden hast. Kurz, sachlich, ohne Wertung.</p><ul><li><b>Einleitungssatz:</b> Textsorte, Titel, Autor, Jahr, Hauptthema</li><li>Nur die <b>wesentlichen</b> Inhalte in logischer Reihenfolge</li><li><b>Simple present</b>, eigene Worte, <b>keine Zitate</b>, keine direkte Rede</li><li>Etwa ein Drittel bis ein Viertel der Länge des Ausgangstextes</li></ul><div class="callout">In the excerpt from the novel “Behold the Dreamers” (2016) by Imbolo Mbue, the author describes …</div>`,[["outline","Hauptpunkte strukturiert darstellen, ohne Details"],["summarise","Wesentliches kurz zusammenfassen"],["describe","Darstellen, wie etwas ist oder abläuft"],["point out / state","Bestimmte Aspekte klar benennen"]]],
+ ana:["Analysis","Anforderungsbereich II",`<p>Untersuche, <b>wie</b> der Text wirkt. Hier entscheidet sich die Note.</p><ul><li><b>Einleitung:</b> These, die die Aufgabe direkt beantwortet</li><li><b>Hauptteil</b>, jeder Absatz nach dem Schema<br><b>P</b>oint (Behauptung) → <b>E</b>vidence (Beleg mit Zeile) → <b>E</b>xplanation (Wirkung auf den Leser)</li><li><b>Schluss:</b> Ergebnisse knapp zusammenführen</li></ul><div class="callout"><b>P:</b> Jende's admiration for America is conveyed through hyperbolic language. <b>E:</b> He calls the country … (l. 12). <b>E:</b> This exaggeration emphasises how idealised his image of America is and prepares the reader for his disillusionment.</div><p class="hint">Mögliche Mittel: narrative perspective, characterisation (direct/indirect), setting, imagery, contrast, tone, irony, repetition, rhetorical question, dialogue, symbols.</p>`,[["analyse / examine","Aufbau, Sprache und Wirkung untersuchen und belegen"],["characterise","Figur über Aussehen, Verhalten, Sprache, Beziehungen erschließen"],["explain","Gründe und Zusammenhänge verständlich machen"],["compare","Gemeinsamkeiten und Unterschiede nach Kriterien darstellen"]]],
+ eva:["Evaluation / Comment","Anforderungsbereich III",`<p>Eigene, begründete Stellungnahme. Oft mit Wahlaufgabe (Kommentar oder kreative Aufgabe).</p><ul><li><b>Einleitung:</b> Bezug zum Text, Frage aufwerfen</li><li><b>Hauptteil:</b> 3–4 Argumente, stärkstes zuletzt; Gegenargument einbauen und entkräften</li><li>Belege aus dem Roman <b>und</b> aus Unterricht, Weltwissen, eigener Erfahrung</li><li><b>Conclusion:</b> klare Position, nicht nur wiederholen</li></ul><div class="callout">While some may argue that Jende fails because he lacks ambition, I am convinced that the novel shows how structural barriers decide who can achieve the American Dream.</div><p class="hint"><b>Kreative Aufgabe</b> (z. B. Tagebucheintrag, innerer Monolog, Brief): Perspektive und Stil der Figur treffen, inhaltlich zur Vorlage passen, Textsortenmerkmale einhalten.</p>`,[["assess / evaluate","Abwägen und begründet urteilen"],["comment","Eigene Meinung argumentativ begründen"],["discuss","Pro und Contra darstellen, dann Fazit"],["write (a letter, diary entry …)","Kreativ gestalten, Textsorte beachten"]]]};
+function wShow(k){const w=W[k];$('#wBody').innerHTML=`<span class="pill">${w[1]}</span><h3>${w[0]}</h3>${w[2]}`;$('#wOps').innerHTML='<tr><th>Operator</th><th>Bedeutung</th></tr>'+w[3].map(o=>`<tr><td><b>${o[0]}</b></td><td>${o[1]}</td></tr>`).join('');$$('#wTabs .btn').forEach(b=>b.classList.toggle('on',b.dataset.w===k))}
+$('#wTabs').innerHTML=Object.entries(W).map(([k,w])=>`<button class="btn" data-w="${k}">${w[0]}</button>`).join('');
+$('#wTabs').addEventListener('click',e=>{const b=e.target.closest('[data-w]');if(b)wShow(b.dataset.w)});wShow('comp');
+
+/* Dreamers */
+const CH=[["Jende Jonga","Chauffeur, Ehemann, Vater","Kommt aus Limbe in Kamerun und arbeitet als Chauffeur von Clark Edwards. Er glaubt fest an Amerika als Land der Chancen. Sein Asylantrag beruht auf einer erfundenen Geschichte, deshalb ist sein Status unsicher. Unter dem Druck von Jobverlust und Abschiebeverfahren wird er zunehmend verzweifelt, bestimmend und gegenüber Neni gewalttätig. Am Ende entscheidet er sich für die Rückkehr nach Kamerun.",["American Dream","illegal status","pride","patriarchy"]],
+ ["Neni Jonga","Ehefrau, Studentin","Jendes Frau. Sie studiert am Community College und will Pharmazeutin werden. Für sie bedeutet Amerika vor allem Bildung und Freiheit, besonders als Frau. Sie will um jeden Preis bleiben und ist dafür bereit, moralische Grenzen zu überschreiten. Die Rückkehr erlebt sie als Verlust ihres Traums.",["education","female independence","ambition"]],
+ ["Clark Edwards","Manager bei Lehman Brothers","Wohlhabend, arbeitet extrem viel und ist emotional kaum für seine Familie da. Die Finanzkrise erschüttert sein Selbstverständnis. Gegenüber Jende ist er meist fair, zugleich ein Symbol für das System, das die Krise mit verursacht hat.",["Wall Street","class","guilt"]],
+ ["Cindy Edwards","Clarks Ehefrau","Stammt aus armen Verhältnissen und hat sich ihren Status erarbeitet, daher klammert sie sich an Fassade und Kontrolle. Sie ist unglücklich in ihrer Ehe und kämpft mit Tabletten und Alkohol. Ihr Schicksal zeigt, dass Reichtum nicht vor Unglück schützt.",["appearance vs reality","loneliness"]],
+ ["Vince Edwards","älterer Sohn","Lehnt den Lebensentwurf seines Vaters und das materialistische Amerika ab. Er bricht mit dem vorgezeichneten Weg und sucht spirituelle Erfüllung in Indien. Gegenentwurf zu Jende, der nach genau dem strebt, was Vince ablehnt.",["anti-materialism","counter-dream"]],
+ ["Mighty Edwards","jüngerer Sohn","Ein Kind, das wenig Aufmerksamkeit von seinen Eltern bekommt und Nähe bei Jende und Neni findet. Er zeigt, was im wohlhabenden Haushalt fehlt.",["neglect","human connection"]],
+ ["Winston","Jendes Cousin","Hat Jende nach Amerika geholt. Er ist der Beweis, dass Aufstieg möglich ist, allerdings mit legalem Status und Ausbildung.",["success story","privilege of status"]]];
+$('#chars').innerHTML=CH.map((c,i)=>`<button class="chr" data-c="${i}"><h4>${c[0]}</h4><small>${c[1]}</small></button>`).join('');
+$('#chars').addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;const c=CH[b.dataset.c];$$('.chr').forEach(x=>x.classList.toggle('sel',x===b));$('#charInfo').innerHTML=`<h3>${c[0]}</h3><p>${c[2]}</p>${c[3].map(t=>`<span class="pill">${t}</span>`).join('')}`});
+const TH=[["American Dream","Beide Familien jagen einem Ideal hinterher. Die Jongas scheitern an Status und Geld, die Edwards an Leere und Druck.","The novel suggests that the American Dream is less a question of hard work than of legal status, class and luck."],["Immigration & Status","Jendes Leben hängt am Asylverfahren, egal wie fleißig er ist.","Legal status determines opportunities more than individual effort."],["Class & Privilege","Gegensatz von Harlem und Upper East Side; die Krise trifft die Schwächsten am härtesten.","The 2008 crisis shows that those at the top lose comfort, those at the bottom lose everything."],["Appearance vs Reality","Die Edwards wirken perfekt, sind aber innerlich zerrüttet.","Wealth does not guarantee happiness, which questions a purely material dream."],["Gender & Marriage","Jende trifft Entscheidungen allein, Neni verliert ihre Stimme.","Neni's story shows that the dream can mean something different for women."],["Home & Belonging","Die Rückkehr nach Limbe ist Niederlage und Neuanfang zugleich.","Success can also mean redefining one's dream instead of clinging to it."]];
+const PLOT=[["Herbst 2007","Jende bekommt den Job als Chauffeur bei Clark Edwards. Clark verlangt vor allem Diskretion und Loyalität. Für die Jongas fühlt sich das wie der Durchbruch an."],["Vorgeschichte","Jende kam mit einem Touristenvisum, blieb und stellte einen Asylantrag mit einer erfundenen Verfolgungsgeschichte. Neni und Liomi kamen später nach, Neni mit einem Studentenvisum."],["Sommer 2008","Neni hilft im Ferienhaus der Edwards in Southampton aus. Beide Jongas erleben dabei das Innenleben der Familie: Cindys Unglück, Clarks Abwesenheit, Vinces Ablehnung."],["Konflikt","Cindy will von Jende wissen, wohin Clark fährt. Jende steht zwischen Loyalität zu Clark und Druck von Cindy. Als herauskommt, dass er etwas verschwiegen hat, verliert er seinen Job."],["15.09.2008","Lehman Brothers bricht zusammen. Clark bleibt finanziell abgesichert, für die Jongas wird die Lage dagegen immer enger."],["Abstieg","Jende arbeitet in schlecht bezahlten Jobs bis zur Erschöpfung, das Asylverfahren läuft schlecht. Die Ehe leidet: Jende wird bestimmend und gewalttätig, Neni kämpft verzweifelt ums Bleiben."],["Tragödie","Cindy, die mit Tabletten und Alkohol kämpft, stirbt. Die Edwards-Familie zerbricht endgültig."],["Ende","Jende entscheidet gegen Nenis Willen, mit der Familie nach Limbe zurückzukehren. Mit den Ersparnissen können sie dort gut leben, Neni trauert aber um ihren Traum."]];
+$('#plot').innerHTML=PLOT.map(p=>`<div class="t" style="font-size:.95rem">${p[0]}</div><div class="d">${p[1]}</div>`).join('');
+const VOC=[["chauffeur","Chauffeur, Fahrer"],["asylum seeker / to apply for asylum","Asylbewerber / Asyl beantragen"],["undocumented immigrant","Einwanderer ohne Papiere"],["deportation / to be deported","Abschiebung / abgeschoben werden"],["immigration lawyer","Anwalt für Einwanderungsrecht"],["green card / residence permit","Aufenthaltserlaubnis"],["financial crisis / recession","Finanzkrise / Rezession"],["investment bank / to go bankrupt","Investmentbank / pleitegehen"],["upward (social) mobility","sozialer Aufstieg"],["privilege / the privileged","Privileg / die Privilegierten"],["disillusionment","Ernüchterung, Desillusionierung"],["loyalty / discretion","Loyalität / Verschwiegenheit"],["patriarchal","patriarchalisch"],["to keep up appearances","den Schein wahren"],["homesickness / sense of belonging","Heimweh / Zugehörigkeitsgefühl"]];
+$('#voc').innerHTML+=VOC.map(v=>`<tr><td><b>${v[0]}</b></td><td>${v[1]}</td></tr>`).join('');
+$('#themes').innerHTML+=TH.map(t=>`<tr><td><b>${t[0]}</b></td><td>${t[1]}</td><td><i>${t[2]}</i></td></tr>`).join('');
+
+const ST=[["metaphor","“America was a golden door”","macht Abstraktes anschaulich, verdichtet Bedeutung"],["simile","“as quiet as a grave”","Vergleich mit wie/as, verstärkt Vorstellung"],["personification","“the city never sleeps”","verlebendigt Dinge, emotionale Nähe"],["hyperbole","“a million times better”","Übertreibung, betont Gefühl oder Ironie"],["alliteration","“dreams and despair”","Klang, Einprägsamkeit, verknüpft Begriffe"],["anaphora","“We work. We save. We wait.”","Wiederholung am Satzanfang, Nachdruck, Rhythmus"],["enumeration","“rent, fees, bills, lawyers”","Aufzählung, zeigt Fülle oder Druck"],["rhetorical question","“Who would not want this life?”","bezieht Leser ein, legt Antwort nahe"],["contrast / juxtaposition","Harlem flat vs. Hamptons house","hebt Unterschiede hervor, Kritik"],["irony","Der Banker verliert nichts, der Fahrer alles.","Gegenteil des Erwarteten, Kritik"],["symbol","das Auto, Limbe","Gegenstand steht für größere Idee"],["imagery","Bilder von Licht, Glanz, Enge","Sinneseindrücke, Atmosphäre"],["climax","“good, better, perfect”","Steigerung, Spannung"],["euphemism","“let go” statt “fired”","beschönigt, verschleiert Härte"],["direct speech / dialogue","Gespräche der Jongas in Pidgin","Authentizität, Charakterisierung über Sprache"]];
+function stR(){const q=($('#stSearch').value||'').toLowerCase();$('#stTab').innerHTML='<tr><th>Stilmittel</th><th>Beispiel</th><th>Typische Wirkung</th></tr>'+ST.filter(s=>s.join(' ').toLowerCase().includes(q)).map(s=>`<tr><td><b>${s[0]}</b></td><td><i>${s[1]}</i></td><td>${s[2]}</td></tr>`).join('')}
+$('#stSearch').addEventListener('input',stR);stR();
+/* Drill */
+const DR=[["I have lived in Bremen ___ ten years.",["for","since"],0],["The author ___ the contrast between rich and poor.",["emphasise","emphasises"],1],["Jende is more optimistic ___ Neni at first.",["then","than"],1],["The novel, ___ was published in 2016, deals with migration.",["that","which"],1],["The company lost ___ reputation.",["its","it's"],0],["In the excerpt, Jende ___ about his future.",["worries","worried"],0],["The crisis had a strong ___ on both families.",["affect","effect"],1],["Neni hopes ___ become a pharmacist.",["to","for"],0],["___ are many reasons for his decision.",["There","Their"],0],["The narrator describes the scene very ___.",["vivid","vividly"],1]];
+let di=0,dOk=0,dN=0;
+function drill(){const d=DR[di%DR.length];$('#drill').innerHTML=`<p style="font-size:1.05rem">${d[0]}</p><div class="opts">${d[1].map((o,i)=>`<button class="opt" data-o="${i}">${o}</button>`).join('')}</div>`}
+$('#drill').addEventListener('click',e=>{const b=e.target.closest('.opt');if(!b||b.disabled)return;const d=DR[di%DR.length],ok=+b.dataset.o===d[2];dN++;if(ok)dOk++;$$('#drill .opt').forEach((x,i)=>{x.disabled=true;if(i===d[2])x.classList.add('ok')});if(!ok)b.classList.add('bad');$('#drillScore').textContent=`${dOk}/${dN} richtig`});
+$('#drillNext').addEventListener('click',()=>{di++;drill()});drill();
+
+/* Phrasen */
+const PH=[["Einleitung","The extract from … deals with …","Der Auszug aus … handelt von …"],["Einleitung","The article “…”, published in … in …, focuses on …","Sachtext einleiten"],["Einleitung","This essay will examine how …","Analyse ankündigen"],["Analyse","The author uses … in order to …","Mittel + Absicht"],["Analyse","This is emphasised by …","Wird betont durch …"],["Analyse","The imagery of … conveys a sense of …","Bildsprache vermittelt …"],["Analyse","By contrasting … with …, the author highlights …","Kontrast als Mittel"],["Analyse","The reader is made to feel …","Wirkung auf den Leser"],["Analyse","Jende is characterised indirectly through his actions, e.g. …","Indirekte Charakterisierung"],["Analyse","The first-person/third-person narrator allows the reader to …","Erzählperspektive"],["Verknüpfen","Furthermore, … / In addition, …","Additiv"],["Verknüpfen","However, … / Nevertheless, …","Gegensatz"],["Verknüpfen","Consequently, … / As a result, …","Folge"],["Verknüpfen","Whereas the Edwardses …, the Jongas …","Vergleich im Satz"],["Verknüpfen","Similarly, … / Likewise, …","Ähnlichkeit"],["Meinung","I am convinced that …","Klare Position"],["Meinung","It could be argued that … However, …","Gegenargument einbauen"],["Meinung","One must not forget that …","Wichtigen Punkt betonen"],["Meinung","This is particularly evident when …","Beleg einleiten"],["Schluss","All things considered, …","Insgesamt"],["Schluss","To sum up, the novel suggests that …","Fazit Analyse"],["Schluss","In the light of these arguments, I believe …","Fazit Kommentar"],["Mediation","According to the article, …","Laut Artikel"],["Mediation","The author points out that …","Weist darauf hin"],["Mediation","In Germany, … (which means …)","Begriff erklären"],["Mediation","I hope this information is helpful.","E-Mail abschließen"]];
+const cats=['Alle',...new Set(PH.map(p=>p[0]))];$('#phCat').innerHTML=cats.map(c=>`<option>${c}</option>`).join('');
+function phR(){const q=$('#phSearch').value.toLowerCase(),c=$('#phCat').value;$('#phList').innerHTML=PH.filter(p=>(c==='Alle'||p[0]===c)&&(p[1]+p[2]).toLowerCase().includes(q)).map(p=>`<div class="phr"><div><span class="cat">${p[0]}</span><br>${p[1]}<em>${p[2]}</em></div><button data-cp="${p[1].replace(/"/g,'&quot;')}">Kopieren</button></div>`).join('')||'<p class="hint">Nichts gefunden.</p>'}
+$('#phSearch').addEventListener('input',phR);$('#phCat').addEventListener('change',phR);
+$('#phList').addEventListener('click',async e=>{const b=e.target.closest('[data-cp]');if(!b)return;try{await navigator.clipboard.writeText(b.dataset.cp);b.textContent='✓'}catch(err){b.textContent='–'}setTimeout(()=>b.textContent='Kopieren',1200)});phR();
+
+/* Quiz */
+const Q=[["Welche Zeitform nutzt du in Comprehension und Analysis?",["Simple past","Simple present","Present perfect","Past progressive"],1,"Texte werden im simple present wiedergegeben und analysiert."],["Was gehört NICHT in eine Comprehension?",["Einleitungssatz mit Autor und Thema","Zitate und eigene Wertung","Eigene Worte","Logische Reihenfolge"],1,"Zitate und Meinung gehören in Analysis bzw. Evaluation."],["Was ist der Kern eines Analysis-Absatzes?",["Nacherzählung","Point – Evidence – Explanation","Nur Zitate","Eigene Meinung"],1,"Behauptung, Beleg mit Zeilenangabe, Wirkung."],["Der Operator „discuss“ verlangt …",["nur Pro-Argumente","Pro und Contra und ein Fazit","eine Zusammenfassung","eine Beschreibung"],1,"Abwägen und am Ende begründet urteilen."],["In der Mediation solltest du …",["den Text vollständig übersetzen","nur aufgabenrelevante Infos adressatengerecht wiedergeben","deine Meinung ausführlich einbringen","deutsche Begriffe unerklärt lassen"],1,"Auswahl, Adressat, Textsorte, Register."],["Ein deutscher Begriff wie „Ausbildung“ wird in der Mediation …",["weggelassen","kurz auf Englisch erklärt","nur deutsch hingeschrieben","durch „training“ ohne Erklärung ersetzt"],1,"Der Leser kennt das deutsche System nicht."],["Beim ersten Hören im Listening …",["schreibst du ganze Sätze","notierst du Stichpunkte und springst weiter","liest du die Aufgaben zum ersten Mal","wartest du ab"],1,"Ausformulieren erst nach dem zweiten Hören."],["Für wen arbeitet Jende in Behold the Dreamers?",["Winston","Clark Edwards","Vince Edwards","Einen Taxiunternehmer"],1,"Er ist Chauffeur von Clark, Manager bei Lehman Brothers."],["Was bedeutet Amerika für Neni vor allem?",["Ruhm","Bildung und Unabhängigkeit","Ein reicher Ehemann","Abenteuer"],1,"Sie studiert und will Pharmazeutin werden."],["Welche Figur lehnt den American Dream bewusst ab?",["Jende","Clark","Vince","Winston"],2,"Vince wendet sich vom materialistischen Lebensentwurf ab."],["Welches historische Ereignis prägt die Handlung?",["9/11","Finanzkrise 2008 mit dem Lehman-Zusammenbruch","Hurrikan Katrina","Corona-Pandemie"],1,"Die Pleite von Lehman Brothers trifft beide Familien."],["Wie viel Zeit planst du fürs Korrekturlesen im Writing?",["gar keine","ca. 20 Minuten","2 Minuten","eine Stunde"],1,"Rund 20 Minuten für vier gezielte Durchgänge."],["Wann ging Lehman Brothers pleite?",["11. September 2001","15. September 2008","1. Januar 2010","24. Oktober 1929"],1,"Größte Insolvenz der US-Geschichte, Auslöser der Great Recession."],["Wer bekommt in den USA Asyl?",["Wer arm ist","Wer begründete Furcht vor Verfolgung nachweist","Jeder mit Job","Wer 5 Jahre im Land ist"],1,"Wirtschaftliche Not allein reicht nicht. Jendes Geschichte war erfunden."],["Woher stammt die Formel „life, liberty and the pursuit of happiness“?",["Verfassung von 1787","Unabhängigkeitserklärung 1776","Rede von Obama","Bill of Rights"],1,"Grundlage der Idee des American Dream."],["„Wir arbeiten. Wir sparen. Wir warten.“ ist ein Beispiel für …",["Alliteration","Anapher","Metapher","Euphemismus"],1,"Wiederholung am Satzanfang, erzeugt Nachdruck."],["Aus welcher Perspektive wird Behold the Dreamers erzählt?",["Ich-Erzähler Jende","Er/sie-Erzähler, meist aus Sicht von Jende und Neni","Allwissender Erzähler mit Kommentaren","Briefroman"],1,"Die Edwards sehen wir vor allem durch die Augen der Jongas."],["Was ist bei einem Stilmittel in der Analysis entscheidend?",["Den Fachbegriff zu nennen","Die Wirkung zu erklären","Möglichst viele aufzuzählen","Es zu übersetzen"],1,"Point – Evidence – Explanation: Die Wirkung bringt die Punkte."]];
+let qi=0,qs=0;
+function quiz(){if(qi>=Q.length){$('#quizBox').innerHTML=`<h3>${qs} von ${Q.length} richtig</h3><p class="hint">${qs>=Q.length-3?'Sehr gut, du bist bereit.':'Schau dir die Module mit Fehlern noch einmal an.'}</p><button class="btn pri" id="qAgain">Nochmal</button>`;$('#qAgain').onclick=()=>{qi=0;qs=0;quiz()};return}
+ const q=Q[qi];$('#quizBox').innerHTML=`<div class="qbar"><i style="width:${qi/Q.length*100}%"></i></div><p class="hint">Frage ${qi+1} von ${Q.length}</p><h3>${q[0]}</h3><div class="opts">${q[1].map((o,i)=>`<button class="opt" data-o="${i}">${o}</button>`).join('')}</div><p class="hint" id="qExp"></p><button class="btn pri" id="qNext" style="display:none">Weiter →</button>`}
+$('#quizBox').addEventListener('click',e=>{const b=e.target.closest('.opt');if(b&&!b.disabled){const q=Q[qi],ok=+b.dataset.o===q[2];if(ok)qs++;$$('#quizBox .opt').forEach((x,i)=>{x.disabled=true;if(i===q[2])x.classList.add('ok')});if(!ok)b.classList.add('bad');$('#qExp').textContent=q[3];$('#qNext').style.display=''}if(e.target.id==='qNext'){qi++;quiz()}});quiz();
+
+/* Routing */
+const seen=new Set(store.get('en-seen',[]));
+function route(){let v=location.hash.slice(1);if(!$('#v-'+v))v='start';$$('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));seen.add(v);store.set('en-seen',[...seen]);
+ $$('nav.side a').forEach(a=>{a.classList.toggle('active',a.dataset.v===v);a.classList.toggle('seen',seen.has(a.dataset.v))});
+ $$('.tile').forEach(t=>t.classList.toggle('seen',seen.has(t.dataset.t)));
+ $('#progBar').style.width=(MODS.filter(m=>seen.has(m[0])).length/MODS.length*100)+'%';$('#side').classList.remove('open');window.scrollTo(0,0)}
+addEventListener('hashchange',route);route();
+$('#menuBtn').addEventListener('click',()=>$('#side').classList.toggle('open'));
+}
+</script>
+</body>
+</html>
